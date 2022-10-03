@@ -6,10 +6,12 @@ In dumbClassifiers.py, we implement the world's simplest classifiers:
 """
 
 from binary import *
-from numpy  import *
+from numpy import *
 from collections import Counter
 
+
 import util
+
 
 class AlwaysPredictOne(BinaryClassifier):
     """
@@ -59,16 +61,17 @@ class AlwaysPredictMostFrequent(BinaryClassifier):
         X is an vector and we want to make a single prediction: Just
         return the most frequent class!
         """
-        ### TODO: YOUR CODE HERE
-        util.raiseNotDefined()
+        # TODO: YOUR CODE HERE
+        return self.mostFrequentClass
 
     def train(self, X, Y):
         '''
         just figure out what the most frequent class is and store it in self.mostFrequentClass
         '''
 
-        ### TODO: YOUR CODE HERE
-        util.raiseNotDefined()
+        # TODO: YOUR CODE HERE
+        self.mostFrequentClass = Counter(Y).most_common(1)[0][0]
+
 
 class FirstFeatureClassifier(BinaryClassifier):
     """
@@ -96,13 +99,17 @@ class FirstFeatureClassifier(BinaryClassifier):
         check the first feature and make a classification decision based on it
         """
 
-        ### TODO: YOUR CODE HERE
-        util.raiseNotDefined()
+        # TODO: YOUR CODE HERE
+        if X[0] > 0:
+            return self.classForPos
+        else:
+            return self.classForNeg
 
     def train(self, X, Y):
         '''
         just figure out what the most frequent class is for each value of X[:,0] and store it
         '''
 
-        ### TODO: YOUR CODE HERE
-        util.raiseNotDefined()
+        # TODO: YOUR CODE HERE
+        self.classForPos = Counter(Y[X[:, 0] > 0]).most_common(1)[0][0]
+        self.classForNeg = Counter(Y[X[:, 0] <= 0]).most_common(1)[0][0]
