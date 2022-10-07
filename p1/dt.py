@@ -101,9 +101,9 @@ class DT(BinaryClassifier):
 
                 # suppose we split on this feature; what labels
                 # would go left and right?
-                leftY = Y[X[:,d]<0.5]  # TODO: YOUR CODE HERE
+                leftY = Y[X[:,d]<0.5]  # : YOUR CODE HERE
 
-                rightY = Y[X[:,d]>=0.5]  # TODO: YOUR CODE HERE
+                rightY = Y[X[:,d]>=0.5]  # : YOUR CODE HERE
 
                 # we'll classify the left points as their most
                 # common class and ditto right points.  our error
@@ -133,8 +133,8 @@ class DT(BinaryClassifier):
                 #   self.right.trainDT(...)
                 # with appropriate arguments
                 # TODO: YOUR CODE HERE
-                self.left.trainDT(X, Y, maxDepth-1, used + [bestFeature])
-                self.right.trainDT(X, Y, maxDepth-1, used + [bestFeature])
+                self.left.trainDT(X[X[:,bestFeature]<0.5,:], Y[X[:,bestFeature]<0.5], maxDepth - 1, append(used, bestFeature))
+                self.right.trainDT(X[X[:,bestFeature]>=0.5,:], Y[X[:,bestFeature]>=0.5], maxDepth - 1, append(used, bestFeature))
 
     def train(self, X, Y):
         """
