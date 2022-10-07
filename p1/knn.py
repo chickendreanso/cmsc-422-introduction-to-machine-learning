@@ -66,7 +66,14 @@ class KNN(BinaryClassifier):
 
             val = 0                    # this is our return value: #pos - #neg of the K nearest neighbors of X
             ### TODO: YOUR CODE HERE
-            util.raiseNotDefined()
+            # distance
+            dist = sqrt(sum((X - self.trX)**2, axis=1))
+            # sort by distance
+            sorted_dist = argsort(dist)
+            # k nearest neighbors
+            k_nearest = self.trY[sorted_dist[:K]]
+            # count values
+            val = util.mode(k_nearest)
 
             return val
         else:
@@ -75,7 +82,9 @@ class KNN(BinaryClassifier):
 
             val = 0                    # this is our return value: #pos - #neg within an epsilon ball of X
             ### TODO: YOUR CODE HERE
-            util.raiseNotDefined()
+            dist = sqrt(sum((X - self.trX)**2, axis=1))
+            eps_ball = self.trY[dist <= eps]
+            val = util.mode(eps_ball)
             return val
                 
             
