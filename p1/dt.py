@@ -121,9 +121,9 @@ class DT(BinaryClassifier):
                 self.label = util.mode(Y)
 
             else:
-                self.isLeaf = util.raiseNotDefined()  # TODO: YOUR CODE HERE
+                self.isLeaf = False  # TODO: YOUR CODE HERE
 
-                self.feature = util.raiseNotDefined()  # TODO: YOUR CODE HERE
+                self.feature = bestFeature  # TODO: YOUR CODE HERE
 
                 self.left = DT({'maxDepth': maxDepth-1})
                 self.right = DT({'maxDepth': maxDepth-1})
