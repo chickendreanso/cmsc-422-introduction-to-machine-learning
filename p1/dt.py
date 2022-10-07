@@ -108,7 +108,7 @@ class DT(BinaryClassifier):
                 # we'll classify the left points as their most
                 # common class and ditto right points.  our error
                 # is how many points are mislabeled (not the mode of their partition).
-                error = sum(leftY != util.mode(leftY)) + sum(rightY != util.mode(rightY))   # TODO: YOUR CODE HERE
+                error = sum(leftY != util.mode(leftY)) + sum(rightY != util.mode(rightY))   # : YOUR CODE HERE
 
                 # check to see if this is a better error rate
                 if error <= bestError:
@@ -121,9 +121,9 @@ class DT(BinaryClassifier):
                 self.label = util.mode(Y)
 
             else:
-                self.isLeaf = False  # TODO: YOUR CODE HERE
+                self.isLeaf = False  # : YOUR CODE HERE
 
-                self.feature = bestFeature  # TODO: YOUR CODE HERE
+                self.feature = bestFeature  # : YOUR CODE HERE
 
                 self.left = DT({'maxDepth': maxDepth-1})
                 self.right = DT({'maxDepth': maxDepth-1})
