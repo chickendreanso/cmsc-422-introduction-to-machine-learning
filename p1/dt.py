@@ -10,6 +10,7 @@ from numpy import *
 from binary import *
 import util
 
+
 class DT(BinaryClassifier):
     """
     This class defines the decision tree implementation.  It comes
@@ -32,9 +33,9 @@ class DT(BinaryClassifier):
         # have a feature to split on, a left child (for when the
         # feature value is < 0.5) and a right child (for when the
         # feature value is >= 0.5)
-        
+
         self.isLeaf = True
-        self.label  = 1
+        self.label = 1
 
     def online(self):
         """
@@ -54,8 +55,8 @@ class DT(BinaryClassifier):
             return (" " * (depth*2)) + "Leaf " + repr(self.label) + "\n"
         else:
             return (" " * (depth*2)) + "Branch " + repr(self.feature) + "\n" + \
-                      self.left.displayTree(depth+1) + \
-                      self.right.displayTree(depth+1)
+                self.left.displayTree(depth+1) + \
+                self.right.displayTree(depth+1)
 
     def predict(self, X):
         """
@@ -64,14 +65,13 @@ class DT(BinaryClassifier):
         branch.
         """
 
-        ### YOUR CODE HERE
+        # YOUR CODE HERE
         if self.isLeaf:
             return self.label
         elif X[self.feature] < 0.5:
             return self.left.predict(X)
         else:
             return self.right.predict(X)
-        
 
     def trainDT(self, X, Y, maxDepth, used):
         """
@@ -79,65 +79,62 @@ class DT(BinaryClassifier):
         """
 
         # get the size of the data set
-        N,D = X.shape
+        N, D = X.shape
 
         # check to see if we're either out of depth or no longer
         # have any decisions to make
         if maxDepth <= 0 or len(util.uniq(Y)) <= 1:
             # we'd better end at this point.  need to figure
             # out the label to return
-            self.isLeaf = util.raiseNotDefined()    ### TODO: YOUR CODE HERE
+            self.isLeaf = util.raiseNotDefined()  # TODO: YOUR CODE HERE
 
-            self.label  = util.raiseNotDefined()    ### TODO: YOUR CODE HERE
-
+            self.label = util.raiseNotDefined()  # TODO: YOUR CODE HERE
 
         else:
             # we need to find a feature to split on
             bestFeature = -1     # which feature has lowest error
-            bestError   = N      # the number of errors for this feature
+            bestError = N      # the number of errors for this feature
             for d in range(D):
                 # have we used this feature yet
                 if d in used:
                     continue
 
                 # suppose we split on this feature; what labels
-                # would go left and right? 
-                leftY  = util.raiseNotDefined()    ### TODO: YOUR CODE HERE
+                # would go left and right?
+                leftY = util.raiseNotDefined()  # TODO: YOUR CODE HERE
 
-                rightY = util.raiseNotDefined()    ### TODO: YOUR CODE HERE
-
+                rightY = util.raiseNotDefined()  # TODO: YOUR CODE HERE
 
                 # we'll classify the left points as their most
                 # common class and ditto right points.  our error
                 # is how many points are mislabeled (not the mode of their partition).
-                error = util.raiseNotDefined()    ### TODO: YOUR CODE HERE
-
+                error = util.raiseNotDefined()  # TODO: YOUR CODE HERE
 
                 # check to see if this is a better error rate
                 if error <= bestError:
                     bestFeature = d
-                    bestError   = error
+                    bestError = error
 
             if bestFeature < 0:
                 # this shouldn't happen, but just in case...
                 self.isLeaf = True
-                self.label  = util.mode(Y)
+                self.label = util.mode(Y)
 
             else:
-                self.isLeaf  = util.raiseNotDefined()    ### TODO: YOUR CODE HERE
+                self.isLeaf = util.raiseNotDefined()  # TODO: YOUR CODE HERE
 
-                self.feature = util.raiseNotDefined()    ### TODO: YOUR CODE HERE
+                self.feature = util.raiseNotDefined()  # TODO: YOUR CODE HERE
 
-
-                self.left  = DT({'maxDepth': maxDepth-1})
+                self.left = DT({'maxDepth': maxDepth-1})
                 self.right = DT({'maxDepth': maxDepth-1})
                 # recurse on our children by calling
-                #   self.left.trainDT(...) 
+                #   self.left.trainDT(...)
                 # and
-                #   self.right.trainDT(...) 
+                #   self.right.trainDT(...)
                 # with appropriate arguments
-                ### TODO: YOUR CODE HERE
-                util.raiseNotDefined()
+                # TODO: YOUR CODE HERE
+                self.left.trainDT(X, Y, maxDepth-1, used + [bestFeature])
+                self.right.trainDT(X, Y, maxDepth-1, used + [bestFeature])
 
     def train(self, X, Y):
         """
@@ -147,17 +144,17 @@ class DT(BinaryClassifier):
 
         Some hints/suggestions:
           - make sure you don't build the tree deeper than self.opts['maxDepth']
-          
+
           - make sure you don't try to reuse features (this could lead
             to very deep trees that keep splitting on the same feature
             over and over again)
-            
+
           - it is very useful to be able to 'split' matrices and vectors:
             if you want the ids for all the Xs for which the 5th feature is
             on, say X(:,5)>=0.5.  If you want the corresponding classes,
             say Y(X(:,5)>=0.5) and if you want the corresponding rows of X,
             say X(X(:,5)>=0.5,:)
-            
+
           - i suggest having train() just call a second function that
             takes additional arguments telling us how much more depth we
             have left and what features we've used already
@@ -167,12 +164,10 @@ class DT(BinaryClassifier):
 
         self.trainDT(X, Y, self.opts['maxDepth'], [])
 
-
     def getRepresentation(self):
         """
         Return our internal representation: for DTs, this is just our
         tree structure -- i.e., ourselves
         """
-        
-        return self
 
+        return self
