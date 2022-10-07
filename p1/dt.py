@@ -86,9 +86,9 @@ class DT(BinaryClassifier):
         if maxDepth <= 0 or len(util.uniq(Y)) <= 1:
             # we'd better end at this point.  need to figure
             # out the label to return
-            self.isLeaf = util.raiseNotDefined()  # TODO: YOUR CODE HERE
+            self.isLeaf = True  # TODO: YOUR CODE HERE
 
-            self.label = util.raiseNotDefined()  # TODO: YOUR CODE HERE
+            self.label = util.mode(Y)  # TODO: YOUR CODE HERE
 
         else:
             # we need to find a feature to split on
