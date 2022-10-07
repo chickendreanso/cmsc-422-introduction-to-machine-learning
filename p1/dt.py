@@ -101,14 +101,14 @@ class DT(BinaryClassifier):
 
                 # suppose we split on this feature; what labels
                 # would go left and right?
-                leftY = util.raiseNotDefined()  # TODO: YOUR CODE HERE
+                leftY = Y[X[:,d]<0.5]  # TODO: YOUR CODE HERE
 
-                rightY = util.raiseNotDefined()  # TODO: YOUR CODE HERE
+                rightY = Y[X[:,d]>=0.5]  # TODO: YOUR CODE HERE
 
                 # we'll classify the left points as their most
                 # common class and ditto right points.  our error
                 # is how many points are mislabeled (not the mode of their partition).
-                error = util.raiseNotDefined()  # TODO: YOUR CODE HERE
+                error = sum(leftY != util.mode(leftY)) + sum(rightY != util.mode(rightY))   # TODO: YOUR CODE HERE
 
                 # check to see if this is a better error rate
                 if error <= bestError:
@@ -121,9 +121,9 @@ class DT(BinaryClassifier):
                 self.label = util.mode(Y)
 
             else:
-                self.isLeaf = util.raiseNotDefined()  # TODO: YOUR CODE HERE
+                self.isLeaf = False  # TODO: YOUR CODE HERE
 
-                self.feature = util.raiseNotDefined()  # TODO: YOUR CODE HERE
+                self.feature = bestFeature  # TODO: YOUR CODE HERE
 
                 self.left = DT({'maxDepth': maxDepth-1})
                 self.right = DT({'maxDepth': maxDepth-1})
