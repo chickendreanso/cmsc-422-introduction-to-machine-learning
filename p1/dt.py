@@ -64,8 +64,14 @@ class DT(BinaryClassifier):
         branch.
         """
 
-        ### TODO: YOUR CODE HERE
-        util.raiseNotDefined()
+        ### YOUR CODE HERE
+        if self.isLeaf:
+            return self.label
+        elif X[self.feature] < 0.5:
+            return self.left.predict(X)
+        else:
+            return self.right.predict(X)
+        
 
     def trainDT(self, X, Y, maxDepth, used):
         """
@@ -95,7 +101,7 @@ class DT(BinaryClassifier):
                     continue
 
                 # suppose we split on this feature; what labels
-                # would go left and right?
+                # would go left and right? 
                 leftY  = util.raiseNotDefined()    ### TODO: YOUR CODE HERE
 
                 rightY = util.raiseNotDefined()    ### TODO: YOUR CODE HERE
