@@ -9,6 +9,7 @@ from numpy import *
 from binary import *
 import util
 
+
 class Perceptron(BinaryClassifier):
     """
     This class defines the perceptron implementation of a binary
@@ -37,8 +38,8 @@ class Perceptron(BinaryClassifier):
         """
 
         self.weights = 0    # our weight vector
-        self.bias    = 0    # our bias
-        self.numUpd  = 0    # number of updates made
+        self.bias = 0    # our bias
+        self.numUpd = 0    # number of updates made
 
     def online(self):
         """
@@ -50,7 +51,7 @@ class Perceptron(BinaryClassifier):
         """
         Return a string representation of the tree
         """
-        return    "w=" + repr(self.weights)   +  ", b=" + repr(self.bias)
+        return "w=" + repr(self.weights) + ", b=" + repr(self.bias)
 
     def predict(self, X):
         """
@@ -73,14 +74,13 @@ class Perceptron(BinaryClassifier):
         """
 
         # check to see if we've made an error
-        if Y * self.predict(X) <= 0:   ### SOLUTION-AFTER-IF
-            self.numUpd  = self.numUpd  + 1
+        if Y * self.predict(X) <= 0:  # SOLUTION-AFTER-IF
+            self.numUpd = self.numUpd + 1
 
             # perform an update
-            self.weights = util.raiseNotDefined()    ### TODO: YOUR CODE HERE
+            self.weights = self.weights + Y * X  # TODO: YOUR CODE HERE
 
-            self.bias    = util.raiseNotDefined()    ### TODO: YOUR CODE HERE
-
+            self.bias = self.bias + Y  # TODO: YOUR CODE HERE
 
     def nextIteration(self):
         """
@@ -89,7 +89,6 @@ class Perceptron(BinaryClassifier):
         the perceptron, but might be necessary for other classifiers.
         """
         return   # don't need to do anything here
-        
 
     def getRepresentation(self):
         """
@@ -97,4 +96,3 @@ class Perceptron(BinaryClassifier):
         """
 
         return (self.numUpd, self.weights, self.bias)
-
