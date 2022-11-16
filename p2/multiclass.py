@@ -188,7 +188,17 @@ class MCTree:
 
             # compute the training data, store in thisX, thisY
             # TODO: YOUR CODE HERE
-            util.raiseNotDefined()
+            thisX = X[Y == leftLabels[0], :]
+            thisY = (Y[Y == leftLabels[0]] == rightLabels[0]) * 2 - 1
+            if len(leftLabels) > 1:
+                for i in range(1, len(leftLabels)):
+                    thisX = vstack((thisX, X[Y == leftLabels[i], :]))
+                    thisY = hstack(
+                        (thisY, (Y[Y == leftLabels[i]] == rightLabels[i]) * 2 - 1))
+            for i in range(len(rightLabels)):
+                thisX = vstack((thisX, X[Y == rightLabels[i], :]))
+                thisY = hstack(
+                    (thisY, (Y[Y == rightLabels[i]] == rightLabels[i]) * 2 - 1))
 
             try:
                 n.getNodeInfo().fit(thisX, thisY)  # For sklearn implementations
@@ -197,7 +207,15 @@ class MCTree:
 
     def predict(self, X):
         # TODO: YOUR CODE HERE
-        util.raiseNotDefined()
+        X = X.reshape(1, -1)
+        node = self.tree
+        while not node.isLeaf:
+            probs = node.getNodeInfo().predict_proba(X)
+            if probs[0, 1] > 0.5:
+                node = node.getRight()
+            else:
+                node = node.getLeft()
+        return node.getLabel()
 
     def predictAll(self, X):
         N, D = X.shape
