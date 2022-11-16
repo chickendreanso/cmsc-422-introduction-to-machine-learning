@@ -5,6 +5,7 @@ Generic implementation of gradient descent.
 from numpy import *
 import util
 
+
 def gd(func, grad, x0, numIter, stepSize):
     """
     Perform gradient descent on some function func, where grad(x)
@@ -15,7 +16,7 @@ def gd(func, grad, x0, numIter, stepSize):
     We return the final solution as well as the trajectory of function
     values.
     """
-    
+
     # initialize current location
     x = x0
 
@@ -26,21 +27,19 @@ def gd(func, grad, x0, numIter, stepSize):
     # begin iterations
     for iter in range(numIter):
         # compute the gradient at the current location
-        g = util.raiseNotDefined()    ### TODO: YOUR CODE HERE
-
+        # TODO: YOUR CODE HERE
+        g = grad(x)
 
         # compute the step size
-        eta = util.raiseNotDefined()    ### TODO: YOUR CODE HERE
-
+        # TODO: YOUR CODE HERE
+        eta = stepSize / sqrt(iter + 1)
 
         # step in the direction of the gradient
-        x = util.raiseNotDefined()    ### TODO: YOUR CODE HERE
-
+        # TODO: YOUR CODE HERE
+        x = x - eta * g
 
         # record the trajectory
         trajectory[iter+1] = func(x)
 
     # return the solution
     return (x, trajectory)
-
-

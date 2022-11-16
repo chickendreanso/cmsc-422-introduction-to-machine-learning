@@ -9,6 +9,7 @@ from pylab import *
 from binary import *
 from gd import *
 
+
 class LossFunction:
     def loss(self, Y, Yhat):
         """
@@ -41,7 +42,6 @@ class SquaredLoss(LossFunction):
 
         return 0.5 * dot(Y - Yhat, Y - Yhat)
 
-
     def lossGradient(self, X, Y, Yhat):
         """
         The inputs are in the matrix X, the true values are in the
@@ -63,9 +63,8 @@ class LogisticLoss(LossFunction):
         in Yhat; compute the loss associated with these predictions.
         """
 
-        ### TODO: YOUR CODE HERE
+        # TODO: YOUR CODE HERE
         util.raiseNotDefined()
-
 
     def lossGradient(self, X, Y, Yhat):
         """
@@ -74,7 +73,7 @@ class LogisticLoss(LossFunction):
         gradient of the loss associated with these predictions.
         """
 
-        ### TODO: YOUR CODE HERE
+        # TODO: YOUR CODE HERE
         util.raiseNotDefined()
 
 
@@ -89,7 +88,7 @@ class HingeLoss(LossFunction):
         in Yhat; compute the loss associated with these predictions.
         """
 
-        ### TODO: YOUR CODE HERE
+        # TODO: YOUR CODE HERE
         util.raiseNotDefined()
 
     def lossGradient(self, X, Y, Yhat):
@@ -99,7 +98,7 @@ class HingeLoss(LossFunction):
         gradient of the loss associated with these predictions.
         """
 
-        ### TODO: YOUR CODE HERE
+        # TODO: YOUR CODE HERE
         util.raiseNotDefined()
 
 
@@ -136,7 +135,7 @@ class LinearClassifier(BinaryClassifier):
         """
         Return a string representation of the tree
         """
-        return    "w=" + repr(self.weights)
+        return "w=" + repr(self.weights)
 
     def predict(self, X):
         """
@@ -164,17 +163,25 @@ class LinearClassifier(BinaryClassifier):
         """
 
         # get the relevant options
-        lossFn   = self.opts['lossFunction']         # loss function to optimize
-        lambd    = self.opts['lambda']               # regularizer is (lambd / 2) * ||w||^2
-        numIter  = self.opts['numIter']              # how many iterations of gd to run
-        stepSize = self.opts['stepSize']             # what should be our GD step size?
+        lossFn = self.opts['lossFunction']         # loss function to optimize
+        # regularizer is (lambd / 2) * ||w||^2
+        lambd = self.opts['lambda']
+        # how many iterations of gd to run
+        numIter = self.opts['numIter']
+        # what should be our GD step size?
+        stepSize = self.opts['stepSize']
 
         # define our objective function based on loss, lambd and (X,Y)
         def func(w):
             # should compute obj = loss(w) + (lambd/2) * norm(w)^2
-            Yhat = util.raiseNotDefined()    ### TODO: YOUR CODE HERE
+            # TODO: YOUR CODE HERE
+            if type(w) == int:
+                Yhat = 0
+            else:
+                Yhat = dot(w, X.T)
 
-            obj  = util.raiseNotDefined()    ### TODO: YOUR CODE HERE
+            # TODO: YOUR CODE HERE
+            obj = lossFn.loss(Y, Yhat) + (lambd / 2) * (norm(w)**2)
 
             # return the objective
             return obj
@@ -182,9 +189,14 @@ class LinearClassifier(BinaryClassifier):
         # define our gradient function based on loss, lambd and (X,Y)
         def grad(w):
             # should compute gr = grad(w) + lambd * w
-            Yhat = util.raiseNotDefined()    ### TODO: YOUR CODE HERE
+            # TODO: YOUR CODE HERE
+            if type(w) == int:
+                Yhat = 0
+            else:
+                Yhat = dot(w, X.T)
 
-            gr   = util.raiseNotDefined()    ### TODO: YOUR CODE HERE
+            # TODO: YOUR CODE HERE
+            gr = lossFn.lossGradient(X, Y, Yhat) + lambd * w
 
             return gr
 
