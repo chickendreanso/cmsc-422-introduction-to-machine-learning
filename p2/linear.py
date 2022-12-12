@@ -64,7 +64,8 @@ class LogisticLoss(LossFunction):
         """
 
         # TODO: YOUR CODE HERE
-        util.raiseNotDefined()
+        # logistic loss
+        return sum(log(1 + exp(-Y * Yhat)))
 
     def lossGradient(self, X, Y, Yhat):
         """
@@ -74,7 +75,8 @@ class LogisticLoss(LossFunction):
         """
 
         # TODO: YOUR CODE HERE
-        util.raiseNotDefined()
+        # loss gradint
+        return - sum((Y * exp(-Y * Yhat)) / (1 + exp(-Y * Yhat)) * X.T, axis=1)
 
 
 class HingeLoss(LossFunction):
@@ -89,7 +91,8 @@ class HingeLoss(LossFunction):
         """
 
         # TODO: YOUR CODE HERE
-        util.raiseNotDefined()
+        # hinge loss
+        return sum(maximum(0, 1 - Y * Yhat))
 
     def lossGradient(self, X, Y, Yhat):
         """
@@ -99,7 +102,8 @@ class HingeLoss(LossFunction):
         """
 
         # TODO: YOUR CODE HERE
-        util.raiseNotDefined()
+        # hinge loss gradient
+        return - sum((Y * (Y * Yhat < 1)) * X.T, axis=1)
 
 
 class LinearClassifier(BinaryClassifier):
