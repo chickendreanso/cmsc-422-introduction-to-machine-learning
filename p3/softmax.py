@@ -2,13 +2,15 @@ import numpy as np
 import scipy.sparse
 import scipy.optimize
 
+
 class SoftmaxRegression:
     """
     Here you will fill in this incomplete implementation of Softmax regression.
 
     Adapted from code by Jatin Shah
     """
-    def __init__(self, numClasses, exSize, opts={'maxIter':400}):
+
+    def __init__(self, numClasses, exSize, opts={'maxIter': 400}):
         """
         numClasses:     number of possible classifications
         exSize:         size of attribute array (number of input features)
@@ -25,7 +27,7 @@ class SoftmaxRegression:
 
         #self.W = 0.005 * np.random.randn(numClasses, exSize)
 
-    def reset(self, numClasses, exSize, opts={'maxIter':400}):
+    def reset(self, numClasses, exSize, opts={'maxIter': 400}):
         self.__init__(numClasses, exSize, opts)
 
     def setOption(self, optName, optVal):
@@ -53,27 +55,30 @@ class SoftmaxRegression:
         numClasses = self.numClasses
         exSize = self.exSize
 
-        W = W.reshape(numClasses, exSize)           # Ensure W is in the correct dimensions
+        # Ensure W is in the correct dimensions
+        W = W.reshape(numClasses, exSize)
         N = X.shape[1]                              # N = number of examples
 
-        W_X = W.dot(X)                              # This is our activation matrix with dimensions (A * B)
-                                                    # where A is the number of classes and B is the number
-                                                    # of examples. (W_X[a, b] gives the activation of example
-                                                    # b for class a.) You will use this matrix to find the
-                                                    # probabilities that example b is class a using the
-                                                    # softmax formula.
-        
+        # This is our activation matrix with dimensions (A * B)
+        W_X = W.dot(X)
+        # where A is the number of classes and B is the number
+        # of examples. (W_X[a, b] gives the activation of example
+        # b for class a.) You will use this matrix to find the
+        # probabilities that example b is class a using the
+        # softmax formula.
+
         W_X = W_X - np.max(W_X)
 
         # This is the indicator function used in the loss function, where indicator[a, b] = 1
         # when example b is labeled a (according to the target Y) and indicator[a, b] = 0 otherwise.
 
-        indicator = scipy.sparse.csr_matrix((np.ones(N), (Y, np.array(range(N)))))
+        indicator = scipy.sparse.csr_matrix(
+            (np.ones(N), (Y, np.array(range(N)))))
         indicator = np.resize(np.array(indicator.todense()), (numClasses, N))
 
         # TODO: Compute the predicted probabilities, the total cost, and the gradient.
 
-        # Each column of W_X is the set of activations for each class corresponding to 
+        # Each column of W_X is the set of activations for each class corresponding to
         # one example; the probabilties are given by the exponential of each entry
         # divided by the sum of the exponentials over the entire column.
 
@@ -90,22 +95,20 @@ class SoftmaxRegression:
         # an easy way to do this with the indicator matrix.
 
         ### YOUR CODE HERE ###
-
-        probabilities = utils.raiseNotDefined()
-        cost = utils.raiseNotDefined()
-        gradient = utils.raiseNotDefined()
+        probabilities = np.exp(W_X) / np.sum(np.exp(W_X), axis=0)
+        cost = -1 * np.sum(np.multiply(np.log(probabilities), indicator)) / N
+        gradient = -1 * np.dot((indicator - probabilities), X.T) / N
 
         ### YOUR CODE HERE ###
 
         # flatten is needed by scipy.optimize.minimize
         return cost, gradient.flatten()
 
-
     def train(self, X, Y):
         """
         Train to find optimal weight matrix W. Here we make use of the SciPy optimization library but
         in theory you could implement gradient descent to do this as well.
-        
+
         X:              (M x N) matrix of input feature values,
                             where M = exSize, N = number of examples
         Y:              (N x 1) array of expected output classes for each example
@@ -121,10 +124,11 @@ class SoftmaxRegression:
             self.opts['maxIter'] = 400
 
         # Lambda function needed by scipy.optimize.minimize
-        J = lambda w: self.cost(X, Y, w)
+        def J(w): return self.cost(X, Y, w)
 
         # SciPy is a powerful data science library, check it out if you're interested :)
-        result = scipy.optimize.minimize(J, W, method='L-BFGS-B', jac=True, options={'maxiter': self.opts['maxIter'], 'disp': True})
+        result = scipy.optimize.minimize(
+            J, W, method='L-BFGS-B', jac=True, options={'maxiter': self.opts['maxIter'], 'disp': True})
         self.W = result.x       # save the optimal solution found
 
     def predict(self, X):
@@ -144,8 +148,8 @@ class SoftmaxRegression:
 
         ### YOUR CODE HERE ###
 
-        probabilities = utils.raiseNotDefined()
-        predicted_classes = utils.raiseNotDefined()
+        probabilities = np.exp(W_X) / np.sum(np.exp(W_X), axis=0)
+        predicted_classes = np.argmax(probabilities, axis=0)
 
         ### YOUR CODE (ENDS) HERE ###
 
