@@ -1,5 +1,6 @@
 import numpy as np
 
+
 class NN:
     def __init__(self, activation_function, loss_function, hidden_layers=[1024], input_d=784, output_d=10):
         self.weights = []
@@ -12,7 +13,7 @@ class NN:
         hidden_layers.append(output_d)
         for d2 in hidden_layers:
             self.weights.append(np.random.randn(d2, d1)*np.sqrt(2.0/d1))
-            self.biases.append(np.zeros((d2,1)))
+            self.biases.append(np.zeros((d2, 1)))
             d1 = d2
 
     def print_model(self):
@@ -21,15 +22,15 @@ class NN:
         """
         print("activation:{}".format(self.activation_function.__class__.__name__))
         print("loss function:{}".format(self.loss_function.__class__.__name__))
-        for idx,(w,b) in enumerate(zip(self.weights, self.biases),1):
+        for idx, (w, b) in enumerate(zip(self.weights, self.biases), 1):
             print("Layer {}\tw:{}\tb:{}".format(idx, w.shape, b.shape))
 
     def predict(self, X):
         D = X
         ws = self.weights
         bs = self.biases
-        for w,b in zip(ws[:-1], bs[:-1]):
-            D = self.activation_function.activate(np.matmul(w,D)+b) 
+        for w, b in zip(ws[:-1], bs[:-1]):
+            D = self.activation_function.activate(np.matmul(w, D)+b)
             # Be careful of the broadcasting here: (d,N) + (d,1) -> (d,N).
         Yhat = np.matmul(ws[-1], D)+bs[-1]
         return np.argmax(Yhat, axis=0)
@@ -43,11 +44,13 @@ class NN:
         D_stack.append(D)
         num_layers = len(ws)
         for idx in range(num_layers-1):
-            # TODO 2: Calculate D (D_k in the tutorial) for forward pass (which is similar to self.predit). 
+            # TODO 2: Calculate D (D_k in the tutorial) for forward pass (which is similar to self.predit).
             # This intermediate results to will then be stored to D_stack.
 
             ### YOUR CODE HERE ###
-            raise NotImplementedError("Calculate D")
+            # Implement the forward pass (TODO 2) and back propagation (TODO 3) for gradient calculation. Use "activation.activate" and "activation.backprop_grad" in your code so that your gradient computation works for different choices of activation functions.
+            D = self.activation_function.activate(
+                np.matmul(ws[idx], D) + bs[idx])
             D_stack.append(D)
 
         Yhat = np.matmul(ws[-1], D) + bs[-1]
@@ -57,33 +60,34 @@ class NN:
         grad_bs = []
         grad_Ws = []
 
-        grad = self.loss_function.lossGradient(Y,Yhat)
+        grad = self.loss_function.lossGradient(Y, Yhat)
         grad_b = np.sum(grad, axis=1, keepdims=1)
         grad_W = np.matmul(grad, D_stack[num_layers-1].transpose())
         grad_bs.append(grad_b)
         grad_Ws.append(grad_W)
         for idx in range(num_layers-2, -1, -1):
-            # TODO 3: Calculate grad_bs and grad_Ws, which are lists of gradients for b's and w's of each layer. 
+            # TODO 3: Calculate grad_bs and grad_Ws, which are lists of gradients for b's and w's of each layer.
             # Take a look at the update step if you are not sure about the format. Notice that we first store the
             # gradients for each layer in a reversed order. The two lists are reversed before returned.
 
-            #1. Update grad for the current layer (G_k in the tutorial)
-
+            # 1. Update grad for the current layer (G_k in the tutorial)
             ### YOUR CODE HERE ###
-            raise NotImplementedError("Update grad")
+            grad = np.matmul(ws[idx+1].transpose(), grad)
+            grad = self.activation_function.backprop_grad(grad)
 
-            #2. Calculate grad_b (gradient with respect to b of the current layer)
-
+            # 2. Calculate grad_b (gradient with respect to b of the current layer)
             ### YOUR CODE HERE ###
-            raise NotImplementedError("Calculate grad_b")
-            #3. Calculate grad_W (gradient with respect to W of the current layer)
+            grad_b = np.sum(grad, axis=1, keepdims=1)
 
+            # 3. Calculate grad_W (gradient with respect to W of the current layer)
             ### YOUR CODE HERE ###
-            raise NotImplementedError("Calculate grad_W")
+            grad_W = np.matmul(grad, D_stack[idx].transpose())
+
             grad_bs.append(grad_b)
             grad_Ws.append(grad_W)
 
-        grad_bs, grad_Ws = grad_bs[::-1], grad_Ws[::-1] # Reverse the gradient lists
+        # Reverse the gradient lists
+        grad_bs, grad_Ws = grad_bs[::-1], grad_Ws[::-1]
         return training_loss, grad_Ws, grad_bs
 
     def update(self, grad_Ws, grad_bs, learning_rate):
@@ -96,10 +100,11 @@ class NN:
             bs[idx] -= (grad_bs[idx] * learning_rate)
         self.weights = ws
         self.biases = bs
-        return 
+        return
+
 
 class activationFunction:
-    def activate(self,X):
+    def activate(self, X):
         """
         The output of activate should have the same shape as X
         """
@@ -111,30 +116,34 @@ class activationFunction:
         """
         raise NotImplementedError("Abstract class.")
 
+
 class Relu(activationFunction):
-    def activate(self,X):
+    def activate(self, X):
         """
         The output of activate should have the same shape as X
         """
-        return X*(X>0)
+        return X*(X > 0)
 
     def backprop_grad(self, X):
         """
         The output of backprop_grad should have the same shape as X
         """
-        return (X>0).astype(np.float64)
+        return (X > 0).astype(np.float64)
+
 
 class Linear(activationFunction):
-    def activate(self,X):
+    def activate(self, X):
         """
         The output of activate should have the same shape as X
         """
         return X
-    def backprop_grad(self,X):
+
+    def backprop_grad(self, X):
         """
         The output of backprop_grad should have the same shape as X
         """
         return np.ones(X.shape, dtype=np.float64)
+
 
 class LossFunction:
     def loss(self, Y, Yhat):
@@ -151,6 +160,7 @@ class LossFunction:
         """
         raise NotImplementedError("Abstract class.")
 
+
 class SquaredLoss(LossFunction):
     def loss(self, Y, Yhat):
         """
@@ -160,17 +170,18 @@ class SquaredLoss(LossFunction):
         # TODO 0: loss function for squared loss.
 
         ### YOUR CODE HERE ###
-        raise NotImplementedError("Implement SquaredLoss.")
+        loss = 0.5 * np.mean((Yhat - Y) ** 2)
+        return loss
 
     def lossGradient(self, Y, Yhat):
         """
         The true values are in the vector Y; the predicted values are in 
         Yhat; compute the gradient of the loss with respect to Yhat
         """
-        #TODO 1: gradient for squared loss.
+        # TODO 1: gradient for squared loss.
 
         ### YOUR CODE HERE ###
-        raise NotImplementedError("Implement SquaredLoss.")
+        return Yhat - Y
 
 
 class CELoss(LossFunction):
@@ -179,7 +190,7 @@ class CELoss(LossFunction):
         The true values are in the vector Y; the predicted values are
         in Yhat; compute the loss associated with these predictions.
         """
-        #TODO 4: loss function for cross-entropy loss.
+        # TODO 4: loss function for cross-entropy loss.
 
         ### NOT REQUIRED FOR THIS PROJ, YOU CAN DO IT FOR FUN ###
         raise NotImplementedError("Implement CELoss.")
@@ -190,7 +201,7 @@ class CELoss(LossFunction):
         Yhat; compute the gradient of the loss with respect to Yhat, which
         has the same shape of Yhat and Y.
         """
-        #TODO 5: gradient for cross-entropy loss.
+        # TODO 5: gradient for cross-entropy loss.
 
         ### NOT REQUIRED FOR THIS PROJ, YOU CAN DO IT FOR FUN ###
         raise NotImplementedError("Implement CELoss")

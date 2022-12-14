@@ -14,20 +14,23 @@ def trainTest(classifier, numClasses, exSize, X, Y, Xtest, Ytest):
       * Test data accuracy
       * Individual predictions on Xtest.
     """
-    classifier.train(X, Y);                      # train it
+    classifier.train(X, Y)                      # train it
 
-    #print "Learned Classifier:"
-    #print classifier
+    # print "Learned Classifier:"
+    # print classifier
 
-    Ypred = classifier.predict(X);               # predict the training data
-    trAcc = mean(Y == Ypred);                    # check to see how often the predictions are right
+    Ypred = classifier.predict(X)               # predict the training data
+    # check to see how often the predictions are right
+    trAcc = mean(Y == Ypred)
 
-    Ypred = classifier.predict(Xtest);           # predict the training data
-    teAcc = mean(Ytest == Ypred);                # check to see how often the predictions are right
+    Ypred = classifier.predict(Xtest)           # predict the training data
+    # check to see how often the predictions are right
+    teAcc = mean(Ytest == Ypred)
 
-    print ("Training accuracy %g, test accuracy %g" % (trAcc, teAcc))
+    print("Training accuracy %g, test accuracy %g" % (trAcc, teAcc))
 
     return (trAcc, teAcc, Ypred)
+
 
 def learningCurve(classifier, numClasses, exSize, X, Y, Xtest, Ytest):
     """
@@ -46,9 +49,9 @@ def learningCurve(classifier, numClasses, exSize, X, Y, Xtest, Ytest):
     print(M)
 
     dataSizes = zeros(M)
-    trainAcc  = zeros(M)
-    testAcc   = zeros(M)
-    
+    trainAcc = zeros(M)
+    testAcc = zeros(M)
+
     for i in range(1, M+1):    # loop over "skip lengths"
         # select every 2^(M-i)th point
         print(i)
@@ -56,37 +59,40 @@ def learningCurve(classifier, numClasses, exSize, X, Y, Xtest, Ytest):
         Xtr = X[:, ids]
         Ytr = Y[ids]
 
-        print (Xtr.shape)
-        print (Ytr.shape)
+        print(Xtr.shape)
+        print(Ytr.shape)
 
         # report what we're doing
-        print ("Training classifier on %d points..." % ids.size)
+        print("Training classifier on %d points..." % ids.size)
 
         # train the classifier
-        (trAcc, teAcc, Ypred) = trainTest(classifier, numClasses, exSize, Xtr, Ytr, Xtest, Ytest)
-        
+        (trAcc, teAcc, Ypred) = trainTest(classifier,
+                                          numClasses, exSize, Xtr, Ytr, Xtest, Ytest)
+
         # store the results
         dataSizes[i-1] = ids.size
-        trainAcc[i-1]  = trAcc
-        testAcc[i-1]   = teAcc
+        trainAcc[i-1] = trAcc
+        testAcc[i-1] = teAcc
 
     return (dataSizes, trainAcc, testAcc)
+
 
 def hyperparamCurve(classifier, hpName, hpValues, numClasses, exSize, X, Y, Xtest, Ytest):
     M = len(hpValues)
     trainAcc = zeros(M)
-    testAcc  = zeros(M)
+    testAcc = zeros(M)
     for m in range(M):
         # report what we're doing
-        print ("Training classifier with %s=%g..." % (hpName, hpValues[m]))
-        
+        print("Training classifier with %s=%g..." % (hpName, hpValues[m]))
+
         # train the classifier
         classifier.reset(numClasses, exSize)
         classifier.setOption(hpName, hpValues[m])
-        (trAcc, teAcc, Ypred) = trainTest(classifier, numClasses, exSize, X, Y, Xtest, Ytest)
+        (trAcc, teAcc, Ypred) = trainTest(
+            classifier, numClasses, exSize, X, Y, Xtest, Ytest)
 
         # store the results
         trainAcc[m] = trAcc
-        testAcc[m]  = teAcc
+        testAcc[m] = teAcc
 
     return (hpValues, trainAcc, testAcc)
